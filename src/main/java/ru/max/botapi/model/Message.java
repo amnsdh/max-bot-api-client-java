@@ -48,10 +48,10 @@ public class Message implements MaxSerializable {
     private @Valid String url;
 
     @JsonCreator
-    public Message(@JsonProperty("recipient") Recipient recipient, @JsonProperty("timestamp") Long timestamp, @JsonProperty("body") MessageBody body) { 
+    public Message(@JsonProperty("recipient") Recipient recipient, @JsonProperty("timestamp") Long timestamp, @JsonProperty("body") MessageBody body, @JsonProperty("message") MessageBody message) { 
         this.recipient = recipient;
         this.timestamp = timestamp;
-        this.body = body;
+        this.body = body == null ? message : body;
     }
 
     public Message sender(User sender) {
