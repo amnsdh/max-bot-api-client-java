@@ -288,7 +288,7 @@ public class MaxService {
         );
 
         MessageBody body = new MessageBody("mid." + id, id, hasText ? "text" + id : null, attachments);
-        Message message = new Message(recipient, System.currentTimeMillis(), body).sender(sender);
+        Message message = new Message(recipient, System.currentTimeMillis(), body, null).sender(sender);
         message.link(new LinkedMessage(MessageLinkType.FORWARD, body).sender(sender).chatId(id));
         message.stat(new MessageStat(2));
 
