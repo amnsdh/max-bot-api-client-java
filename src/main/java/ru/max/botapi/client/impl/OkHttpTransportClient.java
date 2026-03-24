@@ -267,7 +267,7 @@ public class OkHttpTransportClient implements MaxTransportClient {
         public Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
             Request request = original.newBuilder()
-                    .header("Authorization", USER_AGENT)
+                    .header("User-Agent", USER_AGENT)
                     .build();
 
             return chain.proceed(request);
