@@ -75,6 +75,17 @@ public class OkHttpTransportClient implements MaxTransportClient {
                 .build());
     }
 
+    public OkHttpTransportClient(String accessToken) {
+        this(new OkHttpClient.Builder()
+                .addInterceptor(new AddAuthorizationHeader(accessToken))
+                .addInterceptor(new AddUserAgent())
+                .addInterceptor(new LoggingInterceptor())
+                .readTimeout(100, TimeUnit.SECONDS)
+                .callTimeout(100, TimeUnit.SECONDS)
+                .followRedirects(true)
+                .build());
+    }
+
     public OkHttpTransportClient(OkHttpClient httpClient) {
         this.httpClient = httpClient;
     }
@@ -232,12 +243,31 @@ public class OkHttpTransportClient implements MaxTransportClient {
         return future;
     }
 
+    private static class AddAuthorizationHeader implements Interceptor {
+
+        private final String accessToken;
+
+        public AddAuthorizationHeader(String accessToken) {
+            this.accessToken = accessToken;
+        }
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request original = chain.request();
+            Request request = original.newBuilder()
+                    .header("Authorization", accessToken)
+                    .build();
+
+            return chain.proceed(request);
+        }
+    }
+
     private static class AddUserAgent implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
             Request request = original.newBuilder()
-                    .header("User-Agent", USER_AGENT)
+                    .header("Authorization", USER_AGENT)
                     .build();
 
             return chain.proceed(request);
